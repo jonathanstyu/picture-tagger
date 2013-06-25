@@ -22,12 +22,11 @@ var Photos = {
 	View: function () {}
 };
 
-Photos.Photo.prototype.setAttributes = function (attrs) {
-	var that = this;
-	_(attrs).each(function (value, key) {
-		that[key] = value;
-	})
+Photos.User = function (attrs) {
+	this.setAttributes(attrs);
 }
+
+Photos.User.findCurrentUser
 
 Photos.User.prototype.setAttributes = function (attrs) {
 	var that = this;
@@ -36,9 +35,6 @@ Photos.User.prototype.setAttributes = function (attrs) {
 	})
 }
 
-Photos.U = function (attrs) {
-	this.setAttributes(attrs);
-}
 
 Photos.User.prototype.save = function (params, callback) {
 	if (this.id) {
@@ -59,8 +55,16 @@ Photos.User.prototype.save = function (params, callback) {
 	})
 }
 
-Photos.User.prototype.fetch = function () {
-
+Photos.User.fetchPhotos = function (callback) {
+	$.ajax({
+		url: "/photos.json",
+		success: function (data) {
+			Photos.User._allPhotos = _(data).map(function (params) {
+				return new Photos.Photo(params);
+			});
+			callback(Photos.User._allPhotos);
+		}
+	})
 }
 
 Photos.User.prototype.destroy = function () {
@@ -73,18 +77,6 @@ Photos.User.prototype.addPhoto = function (callback) {
 
 Photos.Photo = function (attrs) {
 	this.setAttributes(attrs);
-}
-
-Photos.Photo.fetch = function (callback) {
-	$.ajax({
-		url: "/photos.json",
-		success: function (data) {
-			Photos.Photo._all = _(data).map(function (params) {
-				return new Photos.Photo(params);
-			});
-			callback(Photos.Photo._all);
-		}
-	})
 }
 
 Photos.Photo.find = function (id, callback) {
@@ -110,6 +102,12 @@ Photos.Photo.prototype.save = function (callback) {
 	});
 }
 
+Photos.Photo.prototype.setAttributes = function (attrs) {
+	var that = this;
+	_(attrs).each(function (value, key) {
+		that[key] = value;
+	})
+}
 
 Photos.Photo.prototype.destroy = function (callback) {
 	$.ajax({
@@ -134,7 +132,7 @@ Photos.Tag.prototype.destroy = function (callback) {
 }
 
 Photos.View.render = function () {
-	Photos.Photo.fetch(function (photos) {
+	Photos.User.fetchPhotos(function (photos) {
 		var render_method = _.template($("#index_temp").html());
 		var rendered_content = render_method({
 			photos: photos
@@ -151,7 +149,6 @@ $(function () {
 	$('#photos_window').on("click", "#new_photo", function (event) {
 		event.preventDefault();
 		var attrs = $(this.form).serialize()
-		console.log(attrs)
 		var photo = new Photos.Photo({
 			url: attrs
 		})
@@ -164,7 +161,6 @@ $(function () {
 		event.preventDefault();
 
 		Photos.Photo.find($(this).attr("data-id"), function(photo) {
-
 			photo.destroy(function (destroyed) {
 				Photos.View.render();
 			})
