@@ -17,10 +17,63 @@
 
 Photos = {}
 Photos.View = {}
+Photos.User = {}
+Photos.Photo = {}
+Photos.Tag = {}
+
+Photos.User.prototype.save = function (params, callback) {
+	if (this.id) {
+		var method = "put";
+		var url = "/user/" + this.id;
+	} else {
+		var method = "post";
+		var url = "/users"
+	}
+
+	$.ajax({
+		url: url,
+		method: method,
+		data: params,
+		success: function (boomerang) {
+			callback(boomerang);
+		}
+	})
+}
+
+Photo.User.prototype.fetch = function () {
+
+}
+
+Photo.User.prototype.destroy = function () {
+
+}
+
+Photos.Photo.prototype.save = function () {
+
+}
+
+Photo.Photo.prototype.fetch = function () {
+
+}
+
+Photo.Photo.prototype.destroy = function () {
+
+}
+
+Photos.Tag.prototype.save = function () {
+
+}
+
+Photo.Tag.prototype.fetch = function () {
+
+}
+
+Photo.Tag.prototype.destroy = function () {
+
+}
 
 Photos.View.render = function () {
-	var photos = JSON.parse($("#bootstrapped_photos").html());
-
+	// var photos = ;
 	var render_method = _.template($("#index_temp").html());
 	var rendered_content = render_method({
 		photos: photos
@@ -36,7 +89,7 @@ Photos.View.submit = function (element) {
 		url: "/photos",
 		data: params,
 		success: function (boomerang) {
-			that.photos.push(boomerang);
+
 			Photos.View.render();
 		}
 	});
