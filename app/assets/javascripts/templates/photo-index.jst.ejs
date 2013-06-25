@@ -7,10 +7,10 @@
 
 <% for (var i = 0; i < photos.length; i++) { %>
 	<div class="thumbnail">
-	<img src=<%= photos[i].url %> class='img-polaroid' style="height: 220px;">
+	<img src=<%= photos[i].url %> class='img-polaroid' style="height: 220px;" data-id="<%= photos[i].id %>">
   </img>
   <div class="caption">
-    <button data-id="<%= photos[i].id %>" class="btn btn-primary">"Delete this Kitten"</button>
+    <button data-id="<%= photos[i].id %>" class="btn btn-danger">"Delete this Kitten"</button>
   </div>
 	</div>
 	<hr />

@@ -43,7 +43,27 @@ $(function () {
 				Photos.View.render();
 			})
 		})
+	});
+
+	$('#photos_window').on("click", ".img-polaroid", function (event) {
+		event.preventDefault();
+		console.log($(this).attr("data-id"))
+		Photos.Photo.find($(this).attr("data-id"), function(photo) {
+			Photos.View.showPhoto(photo);
+		});
 	})
 
-})
+
+	$('#photos_window').on("click", ".img-enlarged", function (event) {
+		event.preventDefault();
+
+	});
+
+	$('#photos_window').on('click', '#back-link', function (event) {
+		event.preventDefault();
+		Photos.View.render();
+	});
+
+
+});
 

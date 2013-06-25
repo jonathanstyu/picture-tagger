@@ -46,3 +46,4 @@ Photos.Photo.prototype.destroy = function (callback) {
 		}
 	});
 }
+

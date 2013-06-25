@@ -3,8 +3,6 @@ Photos.User = function (attrs) {
 	this.setAttributes(attrs);
 }
 
-Photos.User.findCurrentUser
-
 Photos.User.prototype.setAttributes = function (attrs) {
 	var that = this;
 	_(attrs).each(function (value, key) {
