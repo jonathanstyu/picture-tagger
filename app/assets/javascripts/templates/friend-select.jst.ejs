@@ -1,5 +1,7 @@
-<select id="select-friends">
-	<% for (var i = 0; i < friends.length; i++) { %>
-	<option value="<%= friends[i].id %>"><%= friends[i].username %></option>
-	<% } %>
-</select>
+<div class="name" style="<%= 'position:absolute; top: ' + tagY +'px; left: ' + tagX + 'px;' %>">
+	<select id="select-friends">
+		<% for (var i = 0; i < friends.length; i++) { %>
+		<option value="<%= friends[i].id %>"><%= friends[i].username %></option>
+		<% } %>
+	</select>
+</div>

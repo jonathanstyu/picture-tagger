@@ -47,7 +47,7 @@ Photos.User.fetchPhotos = function (callback) {
 	}
 }
 
-Photos.User.prototype.friends = function (callback) {
+Photos.User.friends = function (callback) {
 	if (Photos.Store._allFriends) {
 		callback(Photos.Store._allFriends)
 	} else {
