@@ -8,4 +8,6 @@ class SessionController < ApplicationController
       render :json => "Go away Hacker"
     end
   end
+
+
 end

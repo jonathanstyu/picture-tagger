@@ -22,6 +22,23 @@ var Photos = {
 	View: function () {}
 };
 
+Photos.Photo.prototype.setAttributes = function (attrs) {
+	var that = this;
+	_(attrs).each(function (value, key) {
+		that[key] = value;
+	})
+}
+
+Photos.User.prototype.setAttributes = function (attrs) {
+	var that = this;
+	_(attrs).each(function (value, key) {
+		that[key] = value;
+	})
+}
+
+Photos.U = function (attrs) {
+	this.setAttributes(attrs);
+}
 
 Photos.User.prototype.save = function (params, callback) {
 	if (this.id) {
@@ -50,6 +67,10 @@ Photos.User.prototype.destroy = function () {
 
 }
 
+Photos.User.prototype.addPhoto = function (callback) {
+
+}
+
 Photos.Photo = function (attrs) {
 	this.setAttributes(attrs);
 }
@@ -74,20 +95,30 @@ Photos.Photo.find = function (id, callback) {
 	}
 }
 
-Photos.Photo.prototype.setAttributes = function (attrs) {
+
+Photos.Photo.prototype.save = function (callback) {
 	var that = this;
-	_(attrs).each(function (value, key) {
-		that[key] = value;
-	})
+	var params = $(element).serialize();
+
+	$.ajax({
+		type: "post",
+		url: "/photos",
+		data: params,
+		success: function (boomerang) {
+			callback(boomerang);
+		}
+	});
 }
 
-Photos.Photo.prototype.save = function () {
 
-}
-
-
-Photos.Photo.prototype.destroy = function () {
-
+Photos.Photo.prototype.destroy = function (callback) {
+	$.ajax({
+		url: "photos/" + this.id,
+		type: "delete",
+		success: function (data) {
+			callback(data);
+		}
+	});
 }
 
 Photos.Tag.prototype.save = function () {
@@ -98,7 +129,7 @@ Photos.Tag.prototype.fetch = function () {
 
 }
 
-Photos.Tag.prototype.destroy = function () {
+Photos.Tag.prototype.destroy = function (callback) {
 
 }
 
@@ -113,26 +144,31 @@ Photos.View.render = function () {
 
 }
 
-Photos.View.submit = function (element) {
-	var that = this;
-	var params = $(element).serialize();
-	$.ajax({
-		type: "post",
-		url: "/photos",
-		data: params,
-		success: function (boomerang) {
-
-			Photos.View.render();
-		}
-	});
-}
 
 $(function () {
 	Photos.View.render();
 
 	$('#photos_window').on("click", "#new_photo", function (event) {
 		event.preventDefault();
-		Photos.View.submit(this.form)
+		var attrs = $(this.form).serialize()
+		console.log(attrs)
+		var photo = new Photos.Photo({
+			url: attrs
+		})
+		Photos.Photo.save(this.form, function (data) {
+			Photos.View.render();
+		})
+	});
+
+	$('#photos_window').on("click", ":button", function (event) {
+		event.preventDefault();
+
+		Photos.Photo.find($(this).attr("data-id"), function(photo) {
+
+			photo.destroy(function (destroyed) {
+				Photos.View.render();
+			})
+		})
 	})
 
 })
