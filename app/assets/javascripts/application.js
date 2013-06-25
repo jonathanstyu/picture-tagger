@@ -15,12 +15,15 @@
 //= require underscore
 //= require_tree .
 //= require_tree ./templates
+//= require_tree ./models
 
 var Photos = {
 	User: function () {},
 	Photo: function () {},
 	Tag: function () {},
-	View: function () {}
+	View: function () {},
+	Store: function () {
+	}
 };
 
 Photos.User = function (attrs) {
@@ -57,15 +60,20 @@ Photos.User.prototype.save = function (params, callback) {
 }
 
 Photos.User.fetchPhotos = function (callback) {
-	$.ajax({
-		url: "/photos.json",
-		success: function (data) {
-			Photos.User._allPhotos = _(data).map(function (params) {
-				return new Photos.Photo(params);
-			});
-			callback(Photos.User._allPhotos);
-		}
-	})
+	if (Photos.Store._allPhotos) {
+		callback(Photos.Store._allPhotos)
+	} else {
+		$.ajax({
+			url: "/photos.json",
+			success: function (data) {
+				var photos = _(data).map(function (params) {
+					return new Photos.Photo(params);
+				});
+				Photos.Store._allPhotos = photos;
+				callback(Photos.Store._allPhotos);
+			}
+		});
+	}
 }
 
 Photos.User.prototype.destroy = function () {
@@ -82,22 +90,23 @@ Photos.Photo = function (attrs) {
 
 Photos.Photo.find = function (id, callback) {
 	var that = this;
-	var result = _(Photos.Photo._all).findWhere({id: +id});
+	var result = _(Photos.Store._allPhotos).findWhere({id: +id});
 	if (callback) {
 		callback(result);
 	}
 }
 
 
-Photos.Photo.prototype.save = function (callback) {
+Photos.Photo.prototype.save = function (element, callback) {
 	var that = this;
 	var params = $(element).serialize();
 
 	$.ajax({
 		type: "post",
-		url: "/photos",
+		url: "/photos.json",
 		data: params,
 		success: function (boomerang) {
+			Photos.Store._allPhotos.push(new Photos.Photo(boomerang));
 			callback(boomerang);
 		}
 	});
@@ -111,10 +120,16 @@ Photos.Photo.prototype.setAttributes = function (attrs) {
 }
 
 Photos.Photo.prototype.destroy = function (callback) {
+	var that = this
 	$.ajax({
-		url: "photos/" + this.id,
+		url: "/photos/" + this.id,
 		type: "delete",
 		success: function (data) {
+			var index = _(Photos.Store._allPhotos).indexOf(that);
+			console.log(index)
+			console.log(Photos.Store._allPhotos.length)
+			Photos.Store._allPhotos.splice(+index, 1);
+			console.log(Photos.Store._allPhotos.length)
 			callback(data);
 		}
 	});
@@ -135,7 +150,6 @@ Photos.Tag.prototype.destroy = function (callback) {
 Photos.View.render = function () {
 	Photos.User.fetchPhotos(function (photos) {
 
-
 		var render_method = JST['templates/photo-index']
 		var rendered_content = render_method({
 			photos: photos
@@ -155,7 +169,7 @@ $(function () {
 		var photo = new Photos.Photo({
 			url: attrs
 		})
-		Photos.Photo.save(this.form, function (data) {
+		photo.save(this.form, function (data) {
 			Photos.View.render();
 		})
 	});

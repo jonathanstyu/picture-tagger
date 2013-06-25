@@ -1,3 +1,10 @@
+<h2>Add a Photo</h2>
+<form action="index_submit" method="get" accept-charset="utf-8">
+	<label for="URL">URL</label>
+	<input type="text" name="photo[url]" value="" id="URL">
+	<input type="submit" value="Submit" id="new_photo">
+</form>
+
 <% for (var i = 0; i < photos.length; i++) { %>
 	<div class="thumbnail">
 	<img src=<%= photos[i].url %> class='img-polaroid' style="height: 220px;">
@@ -9,9 +16,4 @@
 	<hr />
 <% } %>
 
-<h2>Add a Photo</h2>
-<form action="index_submit" method="get" accept-charset="utf-8">
-	<label for="URL">URL</label>
-	<input type="text" name="photo[url]" value="" id="URL">
-	<input type="submit" value="Submit" id="new_photo">
-</form>
+
