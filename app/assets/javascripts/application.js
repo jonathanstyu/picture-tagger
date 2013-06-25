@@ -47,15 +47,29 @@ $(function () {
 
 	$('#photos_window').on("click", ".img-polaroid", function (event) {
 		event.preventDefault();
-		console.log($(this).attr("data-id"))
+
 		Photos.Photo.find($(this).attr("data-id"), function(photo) {
-			Photos.View.showPhoto(photo);
+			Photos.TaggingViewController.initialize(photo);
 		});
 	})
 
 
 	$('#photos_window').on("click", ".img-enlarged", function (event) {
 		event.preventDefault();
+
+
+
+		var tagX = (event.clientX - $(this).offset().left);
+		var tagY = (event.clientY - $(this).offset().top);
+		var percentX = (tagX / $(this).width());
+		var percentY = (tagY / $(this).height());
+
+		var tag = new Photos.Tag({
+			xco: percentX,
+			yco: percentY
+		});
+
+		console.log(tag);
 
 	});
 

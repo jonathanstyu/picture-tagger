@@ -3,6 +3,6 @@ var Photos = {
 	Photo: function () {},
 	Tag: function () {},
 	View: function () {},
-	Store: function () {
-	}
+	Store: function () {},
+	TaggingViewController: function () {}
 };

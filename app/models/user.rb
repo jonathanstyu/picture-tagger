@@ -4,7 +4,8 @@ class User < ActiveRecord::Base
 
   has_many :photos
 
-  has_many :friends, :class_name => "User"
+  has_many :friendships
+  has_many :friends, :through => :friendships
 
   def password=(password)
     self.password_digest = BCrypt::Password.create(password)
@@ -20,4 +21,5 @@ class User < ActiveRecord::Base
 
     return self.token
   end
+
 end

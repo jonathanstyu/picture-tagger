@@ -47,6 +47,23 @@ Photos.User.fetchPhotos = function (callback) {
 	}
 }
 
+Photos.User.prototype.friends = function (callback) {
+	if (Photos.Store._allFriends) {
+		callback(Photos.Store._allFriends)
+	} else {
+		$.ajax({
+			url: "/friends.json",
+			success: function (data) {
+				var friends = _(data).map(function (params) {
+					return new Photos.User(params);
+				});
+				Photos.Store._allFriends = friends;
+				callback(Photos.Store._allFriends);
+			}
+		});
+	}
+}
+
 Photos.User.prototype.destroy = function () {
 
 }

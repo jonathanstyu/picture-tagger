@@ -1,0 +1,5 @@
+<select id="select-friends">
+	<% for (var i = 0; i < friends.length; i++) { %>
+	<option value="<%= friends[i].id %>"><%= friends[i].username %></option>
+	<% } %>
+</select>

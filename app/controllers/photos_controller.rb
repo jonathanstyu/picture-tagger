@@ -3,14 +3,15 @@ class PhotosController < ApplicationController
   # GET /photos.json
   def index
     if params[:user_id]
-      @photos = User.find(params[:user_id]).photos
+
+      @photos = User.where(params[:user_id]).includes(:tags)
     else
-      @photos = current_user.photos
+      @photos = current_user.photos.includes(:tags)
     end
 
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render json: @photos }
+      format.json { render json: @photos.to_json(include: [:tags]) }
     end
   end
 
