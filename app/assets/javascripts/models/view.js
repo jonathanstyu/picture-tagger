@@ -1,7 +1,6 @@
 
 Photos.View.render = function () {
 	Photos.User.fetchPhotos(function (photos) {
-		console.log(photos);
 		var render_method = JST['templates/photo-index']
 		var rendered_content = render_method({
 			photos: photos

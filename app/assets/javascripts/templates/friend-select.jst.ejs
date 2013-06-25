@@ -1,7 +1,8 @@
-<div class="name" style="<%= 'position:absolute; top: ' + tagY +'px; left: ' + tagX + 'px;' %>">
-	<select id="select-friends">
+<div class="select-wrapper" style="<%= 'position:absolute; top: ' + tagY +'px; left: ' + tagX + 'px;' %>">
+	<select id="select-friends" data-tagY="<%= tagY %>" data-tagX="<%= tagX %>">
+		<option>Select Friend</option>
 		<% for (var i = 0; i < friends.length; i++) { %>
-		<option value="<%= friends[i].id %>"><%= friends[i].username %></option>
+		<option class="choice" value="<%= friends[i].id %>"><%= friends[i].username %></option>
 		<% } %>
 	</select>
 </div>
