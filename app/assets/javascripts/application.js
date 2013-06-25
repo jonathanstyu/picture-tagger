@@ -15,11 +15,13 @@
 //= require underscore
 //= require_tree .
 
-Photos = {}
-Photos.View = {}
-Photos.User = {}
-Photos.Photo = {}
-Photos.Tag = {}
+var Photos = {
+	User: function () {},
+	Photo: function () {},
+	Tag: function () {},
+	View: function () {}
+};
+
 
 Photos.User.prototype.save = function (params, callback) {
 	if (this.id) {
@@ -27,7 +29,7 @@ Photos.User.prototype.save = function (params, callback) {
 		var url = "/user/" + this.id;
 	} else {
 		var method = "post";
-		var url = "/users"
+		var url = "/users";
 	}
 
 	$.ajax({
@@ -40,23 +42,51 @@ Photos.User.prototype.save = function (params, callback) {
 	})
 }
 
-Photo.User.prototype.fetch = function () {
+Photos.User.prototype.fetch = function () {
 
 }
 
-Photo.User.prototype.destroy = function () {
+Photos.User.prototype.destroy = function () {
 
+}
+
+Photos.Photo = function (attrs) {
+	this.setAttributes(attrs);
+}
+
+Photos.Photo.fetch = function (callback) {
+	$.ajax({
+		url: "/photos.json",
+		success: function (data) {
+			Photos.Photo._all = _(data).map(function (params) {
+				return new Photos.Photo(params);
+			});
+			callback(Photos.Photo._all);
+		}
+	})
+}
+
+Photos.Photo.find = function (id, callback) {
+	var that = this;
+	var result = _(Photos.Photo._all).findWhere({id: +id});
+	if (callback) {
+		callback(result);
+	}
+}
+
+Photos.Photo.prototype.setAttributes = function (attrs) {
+	var that = this;
+	_(attrs).each(function (value, key) {
+		that[key] = value;
+	})
 }
 
 Photos.Photo.prototype.save = function () {
 
 }
 
-Photo.Photo.prototype.fetch = function () {
 
-}
-
-Photo.Photo.prototype.destroy = function () {
+Photos.Photo.prototype.destroy = function () {
 
 }
 
@@ -64,21 +94,23 @@ Photos.Tag.prototype.save = function () {
 
 }
 
-Photo.Tag.prototype.fetch = function () {
+Photos.Tag.prototype.fetch = function () {
 
 }
 
-Photo.Tag.prototype.destroy = function () {
+Photos.Tag.prototype.destroy = function () {
 
 }
 
 Photos.View.render = function () {
-	// var photos = ;
-	var render_method = _.template($("#index_temp").html());
-	var rendered_content = render_method({
-		photos: photos
+	Photos.Photo.fetch(function (photos) {
+		var render_method = _.template($("#index_temp").html());
+		var rendered_content = render_method({
+			photos: photos
+		});
+		$("#photos_window").html(rendered_content);
 	});
-	$("#photos_window").html(rendered_content);
+
 }
 
 Photos.View.submit = function (element) {
