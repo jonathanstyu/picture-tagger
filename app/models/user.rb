@@ -1,4 +1,5 @@
 class User < ActiveRecord::Base
+  require "bcrypt"
   attr_accessible :username, :password
 
   has_many :photos
@@ -6,11 +7,11 @@ class User < ActiveRecord::Base
   has_many :friends, :class_name => "User"
 
   def password=(password)
-    self.password_digest = BCrypt.create(password)
+    self.password_digest = BCrypt::Password.create(password)
   end
 
   def verify_password(password)
-    BCrypt.new(self.password_digest) == password
+    BCrypt::Password.new(self.password_digest) == password
   end
 
   def assign_new_token!

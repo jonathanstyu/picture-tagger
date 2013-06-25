@@ -12,4 +12,43 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require underscore
 //= require_tree .
+
+Photos = {}
+Photos.View = {}
+
+Photos.View.render = function () {
+	var photos = JSON.parse($("#bootstrapped_photos").html());
+
+	var render_method = _.template($("#index_temp").html());
+	var rendered_content = render_method({
+		photos: photos
+	});
+	$("#photos_window").html(rendered_content);
+}
+
+Photos.View.submit = function (element) {
+	var that = this;
+	var params = $(element).serialize();
+	$.ajax({
+		type: "post",
+		url: "/photos",
+		data: params,
+		success: function (boomerang) {
+			that.photos.push(boomerang);
+			Photos.View.render();
+		}
+	});
+}
+
+$(function () {
+	Photos.View.render();
+
+	$('#photos_window').on("click", "#new_photo", function (event) {
+		event.preventDefault();
+		Photos.View.submit(this.form)
+	})
+
+})
+
