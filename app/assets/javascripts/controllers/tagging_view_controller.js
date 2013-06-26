@@ -65,4 +65,17 @@ $(function () {
 		})
 	});
 
+
+
+	$('#photos_window').on('mouseenter', '.tag', function() {
+		$(this).removeClass('show')
+	})
+	$('#photos_window').on('mouseout', '.tag', function() {
+		$(this).addClass('show')
+	})
+	//
+	// $('#photos_window').on('mouseexit', '.tag', function() {
+	// 	$(this).toggle('invisible')
+	// })
+
 })

@@ -11,3 +11,11 @@
  *= require_self
  *= require_tree .
  */
+
+.tag {
+	background-color: yellow;
+}
+
+.tag.show {
+	opacity: 0;
+}
